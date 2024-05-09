@@ -413,8 +413,8 @@ run_command_list(struct command_list *cl)
     /* Fork if:
      *   Not a builtin, OR,
      *   Is a builtin, but isn't a foreground command */
-    if (/* TODO */ 1) {
-      /* TODO */
+    if (!builtin || !is_fg) {
+      child_pid = fork();
     }
 
     if (child_pid == 0) {
