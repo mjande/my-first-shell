@@ -88,9 +88,14 @@ builtin_cd(struct command *cmd, struct builtin_redir const *redir_list)
       dprintf(get_pseudo_fd(redir_list, STDERR_FILENO), "cd: HOME not set\n");
       return -1;
     }
-  }
-  /*TODO: Implement cd with arguments 
-   */
+  } else if (cmd->word_count == 2)
+    /* Set target_dir to pathname arg */
+    target_dir = cmd->words[1];
+  else
+    /* Error: Incorrect number of arguments */
+    return -1;
+
+  /* Update current working directory */
   chdir(target_dir);
   return 0;
 }
@@ -109,8 +114,6 @@ builtin_cd(struct command *cmd, struct builtin_redir const *redir_list)
 static int
 builtin_exit(struct command *cmd, struct builtin_redir const *redir_list)
 {
-  /* TODO: Set params.status to the appropriate value before exiting */
-
   /* Update params.status if exit status provided as argument */
   if (cmd->word_count == 2) {
     int exit_status = strtol(cmd->words[1], NULL, 10);
