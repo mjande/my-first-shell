@@ -33,12 +33,10 @@ prompt:
     /* Check on background jobs */
     if (wait_on_bg_jobs() < 0) goto err;
 
-    perror("Before command_list_parse");
     /* Read input and parse it into a list of commands */
-    // if (signal_enable_interrupt(SIGINT) < 0) goto err;
+    if (signal_enable_interrupt(SIGINT) < 0) goto err;
     int res = command_list_parse(&cl, stdin);
-    //if (signal_ignore(SIGINT) < 0) goto err;
-    perror("After command_list_parse");
+    if (signal_ignore(SIGINT) < 0) goto err;
 
 
     if (res == -1) { /* System library errors */

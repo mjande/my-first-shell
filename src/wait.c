@@ -76,6 +76,8 @@ wait_on_fg_gid(pid_t pgid)
         /* TODO remove the job for this group from the job list
          *  see jobs.h
          */
+        jobs_remove_gid(pgid);
+
         goto out;
       }
       goto err; /* An actual error occurred */
@@ -110,7 +112,7 @@ err:
      * Note: this will cause bigshell to receive a SIGTTOU signal.
      *       You need to also finish signal.c to have full functionality here
      */
-    tcsetpgrp(STDIN_FILENO, getppid());
+    tcsetpgrp(STDIN_FILENO, getpid());
   } else {
     switch (errno) {
       case ENOTTY:
@@ -146,7 +148,7 @@ wait_on_bg_jobs()
        * XXX make sure to do a nonblocking wait!
        */
       int status;
-      pid_t pid = waitpid(0, &status, 0);
+      pid_t pid = waitpid(pgid, &status, WNOHANG);
       if (pid == 0) {
         /* Unwaited children that haven't exited */
         break;

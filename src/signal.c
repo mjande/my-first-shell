@@ -81,9 +81,10 @@ signal_ignore(int sig)
   /* set the signal disposition for signal back to its old state */
   sigaction(sig, &ignore_action, NULL); 
 
-  if (errno) 
+  if (errno) { 
     /* Probably want some error handling here */
     return -1;
+  }
   return 0;
 }
 
