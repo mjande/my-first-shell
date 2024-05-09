@@ -43,7 +43,19 @@ expand_command_words(struct command *cmd)
     expand(&cmd->words[i]);
   }
   /* TODO Assignment values */
+  /* Perform expansions for assignment values */
+  for (size_t i = 0; i < cmd->assignment_count; ++i) {
+    struct assignment *a = cmd->assignments[i];
+    expand(&a->value);
+  }
+
   /* TODO I/O Filenames */
+  /* Perform expansions for redirection filenames */
+  for (size_t i = 0; i < cmd->io_redir_count; ++i) {
+    struct io_redir *rd = cmd->io_redirs[i];
+    expand(&rd->filename);
+  }
+
   return 0;
 }
 
