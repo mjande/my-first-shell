@@ -19,10 +19,12 @@ wait_on_fg_gid(pid_t pgid)
   /* TODO send the "continue" signal to the process group 'pgid'
    * XXX review kill(2)
    */
+  kill(pgid, SIGCONT);
 
   if (isatty(STDIN_FILENO)) {
     /* TODO make 'pgid' the foreground process group
      * XXX review tcsetpgrp(3) */
+    tcsetpgrp(STDIN_FILENO, pgid);
   } else {
     switch (errno) {
       /* isatty() reports no-tty by setting errno to ENOTTY (and returning 0),
@@ -54,7 +56,7 @@ wait_on_fg_gid(pid_t pgid)
   for (;;) {
     /* Wait on ALL processes in the process group 'pgid' */
     int status;
-    pid_t res = waitpid(/* TODO */ 0, &status, 0);
+    pid_t res = waitpid(pgid, &status, 0);
     if (res < 0) {
       /* Error occurred (some errors are ok, see below)
        *
@@ -65,8 +67,10 @@ wait_on_fg_gid(pid_t pgid)
         errno = 0;
         if (WIFEXITED(last_status)) {
           /* TODO set params.status to the correct value */
+          params.status = WEXITSTATUS(last_status);
         } else if (WIFSIGNALED(last_status)) {
           /* TODO set params.status to the correct value */
+          params.status = WTERMSIG(last_status);
         }
 
         /* TODO remove the job for this group from the job list
@@ -85,7 +89,7 @@ wait_on_fg_gid(pid_t pgid)
     /* TODO handle case where a child process is stopped
      *  The entire process group is placed in the background
      */
-    if (/* TODO */ 0) {
+    if (WIFSTOPPED(status)) {
       fprintf(stderr, "[%jd] Stopped\n", (intmax_t)jobs_get_jid(pgid));
       goto out;
     }
@@ -106,6 +110,7 @@ err:
      * Note: this will cause bigshell to receive a SIGTTOU signal.
      *       You need to also finish signal.c to have full functionality here
      */
+    tcsetpgrp(STDIN_FILENO, getppid());
   } else {
     switch (errno) {
       case ENOTTY:
