@@ -1,6 +1,8 @@
 #define _POSIX_C_SOURCE 200809L
 #include <signal.h>
 #include <errno.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "signal.h"
 
@@ -39,8 +41,14 @@ signal_init(void)
    * e.g. sigaction(SIGNUM, &new_handler, &saved_old_handler);
    *
    * */
-  errno = ENOSYS; /* not implemented */
-  return -1;
+  sigaction(SIGTSTP, &ignore_action, &old_sigtstp);
+  sigaction(SIGINT, &ignore_action, &old_sigint);
+  sigaction(SIGTTOU, &ignore_action, &old_sigttou);
+
+  if (errno)
+    /* Probably want some error handling here */
+    return -1;
+  return 0;
 }
 
 /** enable signal to interrupt blocking syscalls (read/getline, etc) 
@@ -52,9 +60,13 @@ signal_init(void)
 int
 signal_enable_interrupt(int sig)
 {
-  /* TODO set the signal disposition for signal to interrupt  */
-  errno = ENOSYS; /* not implemented */
-  return -1;
+  /* set the signal disposition for signal to interrupt  */
+  sigaction(sig, &interrupt_action, NULL);
+
+  if (errno)
+    /* Probably want some error handling here */
+    return -1;
+  return -0;
 }
 
 /** ignore a signal
@@ -66,9 +78,13 @@ signal_enable_interrupt(int sig)
 int
 signal_ignore(int sig)
 {
-  /* TODO set the signal disposition for signal back to its old state */
-  errno = ENOSYS; /* not implemented */
-  return -1;
+  /* set the signal disposition for signal back to its old state */
+  sigaction(sig, &ignore_action, NULL); 
+
+  if (errno) 
+    /* Probably want some error handling here */
+    return -1;
+  return 0;
 }
 
 /** Restores signal dispositions to what they were when bigshell was invoked
@@ -84,6 +100,13 @@ signal_restore(void)
    * e.g. sigaction(SIGNUM, &saved_old_handler, NULL);
    *
    * */
-  errno = ENOSYS; /* not implemented */
-  return -1;
+  sigaction(SIGTSTP, &old_sigtstp, NULL);
+  sigaction(SIGINT, &old_sigint, NULL);
+  sigaction(SIGTTOU, &old_sigttou, NULL);
+
+  if (errno) {
+    /* Probably want some error handling here */
+    return -1;
+  }
+  return 0;
 }
