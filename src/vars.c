@@ -31,15 +31,22 @@ static int
 is_valid_varname(char const *name)
 {
   assert(name);
-  /* TODO: Implement me.
-   * Refer to:
+  /* Variable validation based on: 
    *  3.230 Name. Base Definitions. POSIX.1-2008
    *  regex to match: [A-Za-z_][A-Za-z0-9_]*
-   *
-   * You'll most definitely want to use functions from: ctype.h(0P)
    */
-  errno = ENOSYS; /* Not implemented */
-  return -1;
+
+   /* Validate first character is a letter or underscore */
+  if (!(isalpha(name[0]) || name[0] == '_')) return 0;
+
+  /* Validate that remaining characters are alphanumerica or an underscore */
+  for (int i = 1; i < strlen(name); i++) {
+    if (!(isalnum(name[0]) || name[0] == '_'))
+      return 0;
+  }
+
+  /* Var is valid */
+  return 1;
 }
 
 /** Checks if a variable name is a valid XBD name 
@@ -52,10 +59,8 @@ is_valid_varname(char const *name)
 int
 vars_is_valid_varname(char const *name)
 {
-  /* TODO: Implement argument validation before tail-calling internal
-   * is_valid_varname() function. */
-  errno = ENOSYS;
-  return -1;
+  if (!name) return 0;
+  return is_valid_varname(name);
 }
 
 /** returns nullptr if not found 
