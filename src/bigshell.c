@@ -25,18 +25,18 @@ main(int argc, char *argv[])
   struct command_list *cl = 0;
 
   /* Program initialization routines */
-  if (signal_init() < 0) goto err;
+  // if (signal_init() < 0) goto err;
 
   /* Main Event Loop: REPL -- Read Evaluate Print Loop */
   for (;;) {
 prompt:
-    /* Check on backround jobs */
+    /* Check on background jobs */
     if (wait_on_bg_jobs() < 0) goto err;
 
     /* Read input and parse it into a list of commands */
-    if (signal_enable_interrupt(SIGINT) < 0) goto err;
+    // if (signal_enable_interrupt(SIGINT) < 0) goto err;
     int res = command_list_parse(&cl, stdin);
-    if (signal_ignore(SIGINT) < 0) goto err;
+    // if (signal_ignore(SIGINT) < 0) goto err;
 
     if (res == -1) { /* System library errors */
       switch (errno) { /* Handle specific errors */

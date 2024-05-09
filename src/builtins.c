@@ -110,7 +110,24 @@ static int
 builtin_exit(struct command *cmd, struct builtin_redir const *redir_list)
 {
   /* TODO: Set params.status to the appropriate value before exiting */
-  bigshell_exit();
+
+  /* Update params.status if exit status provided as argument */
+  if (cmd->word_count == 2) {
+    int exit_status = strtol(cmd->words[1], NULL, 10);
+
+    /* Error: Invalid exit status argument */
+    if (errno == EINVAL || errno == ERANGE)
+      return -1;
+
+    /* Set params.status for use in bigshell_exit() */
+    params.status = exit_status;
+  }
+
+  /* Exit program */
+  if (cmd->word_count == 1 || cmd->word_count == 2)
+    bigshell_exit();
+
+  /* Error: too many arguments */
   return -1;
 }
 
