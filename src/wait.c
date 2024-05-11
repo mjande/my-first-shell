@@ -165,7 +165,13 @@ wait_on_bg_jobs()
           jobs_remove_gid(pgid);
           job_count = jobs_get_joblist_size();
           jobs = jobs_get_joblist();
-        }
+          /* Adding a break here: When there are no child still running, 
+           * waitpid() will return -1 and set errno to ECHILD. In that case,
+           * we haven't encountered an uncatchable error, so it doesn't make
+           * sense to return -1. Instead, we break out of the loop.
+           */
+          break; 
+        } 
         return -1; /* Other errors are not ok */
       }
       
