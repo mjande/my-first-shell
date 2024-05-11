@@ -301,6 +301,7 @@ do_io_redirects(struct command *cmd)
          *
          * XXX What is n? Look for it in `struct io_redir->???` (parser.h)
          */
+        close(r->io_number);
       } else {
         /* The filename is interpreted as a file descriptor number to
          * redirect to. For example, 2>&1 duplicates file descriptor 1
