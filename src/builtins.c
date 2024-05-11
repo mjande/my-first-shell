@@ -1,3 +1,4 @@
+#include <linux/limits.h>
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
 #include <limits.h>
@@ -97,6 +98,13 @@ builtin_cd(struct command *cmd, struct builtin_redir const *redir_list)
 
   /* Update current working directory */
   chdir(target_dir);
+
+  /* Update PWD variable */
+  
+  char new_cwd[PATH_MAX];
+  getcwd(new_cwd, PATH_MAX - 1);
+  vars_set("PWD", new_cwd);
+
   return 0;
 }
 
