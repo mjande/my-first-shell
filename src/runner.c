@@ -121,7 +121,7 @@ get_io_flags(enum io_operator io_op)
       break;
     case OP_GREATAND: /* >& */
     case OP_GREAT:    /* > */
-      flags = O_WRONLY | O_CREAT;      /* TODO */
+      flags = O_WRONLY | O_CREAT | O_EXCL;      /* TODO */
       break;
     case OP_DGREAT: /* >> */
       flags = O_WRONLY | O_APPEND;    /* TODO */
@@ -152,6 +152,7 @@ move_fd(int src, int dst)
   if (src == dst) return dst;
   /* TODO move src to dst */
   /* TODO close src */
+  dst = dup2(dst, src);
   return dst;
 }
 
@@ -342,9 +343,19 @@ do_io_redirects(struct command *cmd)
        * XXX Note: you can supply a mode to open() even if you're not creating a
        * file. it will just ignore that argument.
        */
+      int dst = open(r->filename, flags);
+
+      if (dst == -1)
+        goto err;
 
       /* TODO Move the opened file descriptor to the redirection target */
       /* XXX use move_fd() */
+      dst = move_fd(r->io_number, dst);
+
+       if (dst == -1)
+         goto err;
+        
+
     }
     if (0) {
     err: /* TODO Anything that can fail should jump here. No silent errors!!! */
@@ -541,6 +552,7 @@ run_command_list(struct command_list *cl)
       }
     } else {
       /* Background or Pipeline */
+      params.bg_pid = child_pid;
       params.bg_pid = child_pid;
 
       if (is_bg) {
