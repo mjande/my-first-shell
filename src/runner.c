@@ -130,7 +130,7 @@ get_io_flags(enum io_operator io_op)
       flags = O_RDWR;       /* TODO */
       break;
     case OP_CLOBBER: /* >| */
-      flags = O_WRONLY | O_TRUNC;     /* TODO */
+      flags = O_WRONLY | O_CREAT | O_TRUNC;     /* TODO */
       break;
   }
   return flags;
@@ -343,7 +343,7 @@ do_io_redirects(struct command *cmd)
        * XXX Note: you can supply a mode to open() even if you're not creating a
        * file. it will just ignore that argument.
        */
-      int dst = open(r->filename, flags);
+      int dst = open(r->filename, flags, S_IRWXU | S_IRWXG);
 
       if (dst == -1)
         goto err;
