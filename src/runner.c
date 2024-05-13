@@ -410,9 +410,10 @@ run_command_list(struct command_list *cl)
     int stdin_override = pipeline_fds[STDIN_FILENO];
 
     /* IF we are a pipeline command, create a pipe for our stdout */
-    if (/* TODO */ 0) {
+    if (is_pl) {
       /* TODO create a new pipe with pipeline_fds */
       /* XXX man 2 pipe */
+      pipe(pipeline_fds);
     } else {
       pipeline_fds[0] = -1;
       pipeline_fds[1] = -1;
