@@ -56,7 +56,7 @@ wait_on_fg_gid(pid_t pgid)
   for (;;) {
     /* Wait on ALL processes in the process group 'pgid' */
     int status;
-    pid_t res = waitpid(pgid, &status, 0);
+    pid_t res = waitpid(pgid, &status, WUNTRACED);
     if (res < 0) {
       /* Error occurred (some errors are ok, see below)
        *
@@ -157,9 +157,9 @@ wait_on_bg_jobs()
         if (errno == ECHILD) {
           /* No children -- print exit status based on last loop iteration's status  */
           errno = 0;
-          if (WIFEXITED(status)) {
+          if (WIFEXITED(last_status)) {
             fprintf(stderr, "[%jd] Done\n", (intmax_t)jid);
-          } else if (WIFSIGNALED(status)) {
+          } else if (WIFSIGNALED(last_status)) {
             fprintf(stderr, "[%jd] Terminated\n", (intmax_t)jid);
           }
           jobs_remove_gid(pgid);
@@ -178,7 +178,7 @@ wait_on_bg_jobs()
       last_status = status;
 
       /* Handle case where a process in the group is stopped */
-      if (WIFSTOPPED(status)) {
+      if (WIFSTOPPED(last_status)) {
         fprintf(stderr, "[%jd] Stopped\n", (intmax_t)jid);
         break;
       }
