@@ -489,6 +489,12 @@ run_command_list(struct command_list *cl)
          *   XXX This sets up pipeline redirection */
         /* TODO move stdin_override  -> STDIN_FILENO  if stdin_override >= 0 */
         /* TODO move stdout_override -> STDOUT_FILENO if stdin_override >= 0 */
+        if (stdin_override >= 0)
+          dup2(stdin_override, STDIN_FILENO);
+
+        if (stdout_override >= 0)
+          dup2(stdout_override, STDOUT_FILENO);
+
 
         /* Now handle the remaining redirect operators from the command. */
         if (do_io_redirects(cmd) < 0) err(1, 0);
