@@ -495,7 +495,6 @@ run_command_list(struct command_list *cl)
         if (stdout_override >= 0)
           dup2(stdout_override, STDOUT_FILENO);
 
-
         /* Now handle the remaining redirect operators from the command. */
         if (do_io_redirects(cmd) < 0) err(1, 0);
 
@@ -559,7 +558,6 @@ run_command_list(struct command_list *cl)
       }
     } else {
       /* Background or Pipeline */
-      params.bg_pid = child_pid;
       params.bg_pid = child_pid;
 
       if (is_bg) {

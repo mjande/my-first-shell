@@ -70,7 +70,7 @@ wait_on_fg_gid(pid_t pgid)
           params.status = WEXITSTATUS(last_status);
         } else if (WIFSIGNALED(last_status)) {
           /* TODO set params.status to the correct value */
-          params.status = WTERMSIG(last_status);
+          params.status = 128 + WTERMSIG(last_status);
         }
 
         /* TODO remove the job for this group from the job list
@@ -157,9 +157,9 @@ wait_on_bg_jobs()
         if (errno == ECHILD) {
           /* No children -- print exit status based on last loop iteration's status  */
           errno = 0;
-          if (WIFEXITED(last_status)) {
+          if (WIFEXITED(status)) {
             fprintf(stderr, "[%jd] Done\n", (intmax_t)jid);
-          } else if (WIFSIGNALED(last_status)) {
+          } else if (WIFSIGNALED(status)) {
             fprintf(stderr, "[%jd] Terminated\n", (intmax_t)jid);
           }
           jobs_remove_gid(pgid);
