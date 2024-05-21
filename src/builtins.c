@@ -90,16 +90,16 @@ builtin_cd(struct command *cmd, struct builtin_redir const *redir_list)
       return -1;
     }
   } else if (cmd->word_count == 2)
-    /* Set target_dir to pathname arg */
+    /* Set target_dir to pathname arg (MA) */
     target_dir = cmd->words[1];
   else
-    /* Error: Incorrect number of arguments */
+    /* Error: Incorrect number of arguments (MA) */
     return -1;
 
   /* Update current working directory */
   chdir(target_dir);
 
-  /* Update PWD variable */
+  /* Update PWD variable (MA) */
   
   char new_cwd[PATH_MAX];
   getcwd(new_cwd, PATH_MAX - 1);
@@ -122,19 +122,19 @@ builtin_cd(struct command *cmd, struct builtin_redir const *redir_list)
 static int
 builtin_exit(struct command *cmd, struct builtin_redir const *redir_list)
 {
-  /* Update params.status if exit status provided as argument */
+  /* Update params.status if exit status provided as argument (MA) */
   if (cmd->word_count == 2) {
     int exit_status = strtol(cmd->words[1], NULL, 10);
 
-    /* Error: Invalid exit status argument */
+    /* Error: Invalid exit status argument (MA) */
     if (errno == EINVAL || errno == ERANGE)
       return -1;
 
-    /* Set params.status for use in bigshell_exit() */
+    /* Set params.status for use in bigshell_exit() (MA) */
     params.status = exit_status;
   }
 
-  /* Exit program */
+  /* Exit program (MA) */
   if (cmd->word_count == 1 || cmd->word_count == 2)
     bigshell_exit();
 
@@ -178,7 +178,7 @@ static int
 builtin_unset(struct command *cmd, struct builtin_redir const *redir_list)
 {
   for (size_t i = 1; i < cmd->word_count; ++i) {
-    /* Unset variables */
+    /* Unset variables (MA) */
     vars_unset(cmd->words[i]);
   }
   return 0;

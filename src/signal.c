@@ -3,6 +3,8 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include "util/gprintf.h"
 
 #include "signal.h"
 
@@ -36,7 +38,7 @@ static struct sigaction ignore_action = {.sa_handler = SIG_IGN},
 int
 signal_init(void)
 {
-  /* TODO Initialize signals, store old actions 
+  /* Initialize signals, store old actions (MA) 
    *
    * e.g. sigaction(SIGNUM, &new_handler, &saved_old_handler);
    *
@@ -45,9 +47,10 @@ signal_init(void)
   sigaction(SIGINT, &ignore_action, &old_sigint);
   sigaction(SIGTTOU, &ignore_action, &old_sigttou);
 
-  if (errno)
-    /* Probably want some error handling here */
+  if (errno) {
+    gprintf("Signal error: %s", strerror(errno)); 
     return -1;
+   }
   return 0;
 }
 
@@ -60,12 +63,13 @@ signal_init(void)
 int
 signal_enable_interrupt(int sig)
 {
-  /* set the signal disposition for signal to interrupt  */
+  /* Set the signal disposition for signal to interrupt (MA) */
   sigaction(sig, &interrupt_action, NULL);
 
-  if (errno)
-    /* Probably want some error handling here */
+  if (errno) {
+    gprintf("Signal error: %s", strerror(errno)); 
     return -1;
+  }
   return -0;
 }
 
@@ -78,11 +82,11 @@ signal_enable_interrupt(int sig)
 int
 signal_ignore(int sig)
 {
-  /* set the signal disposition for signal back to its old state */
+  /* Set the signal disposition for signal back to its old state (MA) */
   sigaction(sig, &ignore_action, NULL); 
 
   if (errno) { 
-    /* Probably want some error handling here */
+    gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
   return 0;
@@ -96,7 +100,7 @@ signal_ignore(int sig)
 int
 signal_restore(void)
 {
-  /* TODO restore old actions 
+  /* Restore old actions (MA)
    *
    * e.g. sigaction(SIGNUM, &saved_old_handler, NULL);
    *
@@ -106,7 +110,7 @@ signal_restore(void)
   sigaction(SIGTTOU, &old_sigttou, NULL);
 
   if (errno) {
-    /* Probably want some error handling here */
+    gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
   return 0;

@@ -16,13 +16,13 @@ wait_on_fg_gid(pid_t pgid)
 {
   if (pgid < 0) return -1;
   /* Make sure the foreground group is running */
-  /* TODO send the "continue" signal to the process group 'pgid'
+  /* Send the "continue" signal to the process group 'pgid' (MA)
    * XXX review kill(2)
    */
   kill(pgid, SIGCONT);
 
   if (isatty(STDIN_FILENO)) {
-    /* TODO make 'pgid' the foreground process group
+    /* Make 'pgid' the foreground process group (MA)
      * XXX review tcsetpgrp(3) */
     tcsetpgrp(STDIN_FILENO, pgid);
   } else {
@@ -66,14 +66,14 @@ wait_on_fg_gid(pid_t pgid)
         /* No unwaited-for children. The job is done! */
         errno = 0;
         if (WIFEXITED(last_status)) {
-          /* TODO set params.status to the correct value */
+          /* Set params.status to the correct value (MA) */
           params.status = WEXITSTATUS(last_status);
         } else if (WIFSIGNALED(last_status)) {
-          /* TODO set params.status to the correct value */
+          /* Set params.status to the correct value (MA) */
           params.status = 128 + WTERMSIG(last_status);
         }
 
-        /* TODO remove the job for this group from the job list
+        /* Remove the job for this group from the job list (MA)
          *  see jobs.h
          */
         jobs_remove_gid(pgid);
@@ -88,7 +88,7 @@ wait_on_fg_gid(pid_t pgid)
     /* Record status for reporting later */
     last_status = status;
 
-    /* TODO handle case where a child process is stopped
+    /* Handle case where a child process is stopped (MA)
      *  The entire process group is placed in the background
      */
     if (WIFSTOPPED(status)) {
@@ -106,7 +106,7 @@ err:
   }
 
   if (isatty(STDIN_FILENO)) {
-    /* TODO make bigshell the foreground process group again
+    /* Make bigshell the foreground process group again
      * XXX review tcsetpgrp(3) 
      *
      * Note: this will cause bigshell to receive a SIGTTOU signal.
@@ -144,7 +144,7 @@ wait_on_bg_jobs()
     jid_t jid = jobs[i].jid;
     int last_status = 0;
     for (;;) {
-      /* TODO: Modify the following line to wait for process group
+      /* Wait for the process group 
        * XXX make sure to do a nonblocking wait!
        */
       int status;
@@ -165,7 +165,7 @@ wait_on_bg_jobs()
           jobs_remove_gid(pgid);
           job_count = jobs_get_joblist_size();
           jobs = jobs_get_joblist();
-          /* Adding a break here: When there are no child still running, 
+          /* Adding a break here: When there are no children still running, 
            * waitpid() will return -1 and set errno to ECHILD. In that case,
            * we haven't encountered an uncatchable error, so it doesn't make
            * sense to return -1. Instead, we break out of the loop.

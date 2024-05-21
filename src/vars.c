@@ -31,7 +31,7 @@ static int
 is_valid_varname(char const *name)
 {
   assert(name);
-  /* Variable validation based on: 
+  /* Variable validation (MA) based on: 
    *  3.230 Name. Base Definitions. POSIX.1-2008
    *  regex to match: [A-Za-z_][A-Za-z0-9_]*
    */
@@ -59,6 +59,7 @@ is_valid_varname(char const *name)
 int
 vars_is_valid_varname(char const *name)
 {
+  /* Check for name and validate var name (MA) */
   if (!name) return 0;
   return is_valid_varname(name);
 }
