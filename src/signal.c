@@ -89,7 +89,7 @@ signal_ignore(int sig)
 
   if (errno) { 
     gprintf("Signal error: %s", strerror(errno)); 
-    printf("Error in signal_ignore\n");
+    printf("Error in signal_ignore: %s\n", strerror(errno));
     return -1;
   }
   return 0;
