@@ -70,7 +70,7 @@ signal_enable_interrupt(int sig)
     gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
-  return -0;
+  return 0;
 }
 
 /** ignore a signal
@@ -82,7 +82,7 @@ signal_enable_interrupt(int sig)
 int
 signal_ignore(int sig)
 {
-  /* Set the signal disposition for signal back to its old state (MA) */
+  /* Set the signal to be ignored (MA) */
   sigaction(sig, &ignore_action, NULL); 
 
   if (errno) { 
