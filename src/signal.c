@@ -43,14 +43,24 @@ signal_init(void)
    * e.g. sigaction(SIGNUM, &new_handler, &saved_old_handler);
    *
    * */
-  sigaction(SIGTSTP, &ignore_action, &old_sigtstp);
-  sigaction(SIGINT, &ignore_action, &old_sigint);
-  sigaction(SIGTTOU, &ignore_action, &old_sigttou);
-
-  if (errno) {
+  int res = sigaction(SIGTSTP, &ignore_action, &old_sigtstp);
+  if (res == -1) {
     gprintf("Signal error: %s", strerror(errno)); 
     return -1;
-   }
+  }
+
+  res = sigaction(SIGINT, &ignore_action, &old_sigint);
+  if (res == -1) {
+    gprintf("Signal error: %s", strerror(errno)); 
+    return -1;
+  }
+
+  res = sigaction(SIGTTOU, &ignore_action, &old_sigttou);
+  if (res == -1) {
+    gprintf("Signal error: %s", strerror(errno)); 
+    return -1;
+  }
+
   return 0;
 }
 
@@ -64,9 +74,9 @@ int
 signal_enable_interrupt(int sig)
 {
   /* Set the signal disposition for signal to interrupt (MA) */
-  sigaction(sig, &interrupt_action, NULL);
+  int res = sigaction(sig, &interrupt_action, NULL);
 
-  if (errno) {
+  if (res == -1) {
     gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
@@ -83,9 +93,9 @@ int
 signal_ignore(int sig)
 {
   /* Set the signal to be ignored (MA) */
-  sigaction(sig, &ignore_action, NULL); 
+  int res = sigaction(sig, &ignore_action, NULL); 
 
-  if (errno) { 
+  if (res == -1) { 
     gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
@@ -105,13 +115,23 @@ signal_restore(void)
    * e.g. sigaction(SIGNUM, &saved_old_handler, NULL);
    *
    * */
-  sigaction(SIGTSTP, &old_sigtstp, NULL);
-  sigaction(SIGINT, &old_sigint, NULL);
-  sigaction(SIGTTOU, &old_sigttou, NULL);
-
-  if (errno) {
+  int res = sigaction(SIGTSTP, &old_sigtstp, NULL);
+  if (res == -1) {
     gprintf("Signal error: %s", strerror(errno)); 
     return -1;
   }
+
+  res = sigaction(SIGINT, &old_sigint, NULL);
+  if (res == -1) {
+    gprintf("Signal error: %s", strerror(errno)); 
+    return -1;
+  }
+
+  res = sigaction(SIGTTOU, &old_sigttou, NULL);
+  if (res == -1) {
+    gprintf("Signal error: %s", strerror(errno)); 
+    return -1;
+  }
+
   return 0;
 }
