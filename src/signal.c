@@ -49,6 +49,7 @@ signal_init(void)
 
   if (errno) {
     gprintf("Signal error: %s", strerror(errno)); 
+    printf("Error in signal_init\n");
     return -1;
    }
   return 0;
@@ -68,6 +69,7 @@ signal_enable_interrupt(int sig)
 
   if (errno) {
     gprintf("Signal error: %s", strerror(errno)); 
+    printf("Error in signal_enable_interrupt\n");
     return -1;
   }
   return 0;
@@ -87,6 +89,7 @@ signal_ignore(int sig)
 
   if (errno) { 
     gprintf("Signal error: %s", strerror(errno)); 
+    printf("Error in signal_ignore\n");
     return -1;
   }
   return 0;

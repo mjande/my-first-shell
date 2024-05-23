@@ -76,7 +76,6 @@ prompt:
   }
 
 err:
-  printf("Error in bigshell.c\n");
   if (cl) command_list_free(cl);
   free(cl);
   params.status = 127;
