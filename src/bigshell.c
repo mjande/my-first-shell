@@ -17,6 +17,8 @@
 #include "util/gprintf.h"
 #include "wait.h"
 
+#include <string.h>
+
 /** Main bigshell loop
  */
 int
@@ -36,6 +38,8 @@ prompt:
     /* Read input and parse it into a list of commands */
     if (signal_enable_interrupt(SIGINT) < 0) goto err;
     int res = command_list_parse(&cl, stdin);
+
+    printf("Errno before signal_ignore: [%d] %s\n", errno, strerror(errno));
     if (signal_ignore(SIGINT) < 0) goto err;
     
 

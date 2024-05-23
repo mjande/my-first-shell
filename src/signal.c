@@ -69,7 +69,6 @@ signal_enable_interrupt(int sig)
 
   if (errno) {
     gprintf("Signal error: %s", strerror(errno)); 
-    printf("Error in signal_enable_interrupt\n");
     return -1;
   }
   return 0;
