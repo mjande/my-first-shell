@@ -37,6 +37,7 @@ prompt:
     if (signal_enable_interrupt(SIGINT) < 0) goto err;
     int res = command_list_parse(&cl, stdin);
     if (signal_ignore(SIGINT) < 0) goto err;
+    
 
 
     if (res == -1) { /* System library errors */
@@ -75,6 +76,7 @@ prompt:
   }
 
 err:
+  printf("Error in bigshell.c\n");
   if (cl) command_list_free(cl);
   free(cl);
   params.status = 127;
