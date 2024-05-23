@@ -37,12 +37,9 @@ prompt:
 
     /* Read input and parse it into a list of commands */
     if (signal_enable_interrupt(SIGINT) < 0) goto err;
+    printf("Errno before command_list_parse: [%d] %s\n", errno, strerror(errno));
     int res = command_list_parse(&cl, stdin);
-
-    printf("Errno before signal_ignore: [%d] %s\n", errno, strerror(errno));
     if (signal_ignore(SIGINT) < 0) goto err;
-    
-
 
     if (res == -1) { /* System library errors */
       switch (errno) { /* Handle specific errors */
