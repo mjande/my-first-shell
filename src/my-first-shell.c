@@ -18,7 +18,7 @@
 #include "wait.h"
 
 
-/** Main bigshell loop
+/** Main my-first-shell loop
  */
 int
 main(int argc, char *argv[])

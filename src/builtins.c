@@ -130,13 +130,13 @@ builtin_exit(struct command *cmd, struct builtin_redir const *redir_list)
     if (errno == EINVAL || errno == ERANGE)
       return -1;
 
-    /* Set params.status for use in bigshell_exit() (MA) */
+    /* Set params.status for use in myfirstshell_exit() (MA) */
     params.status = exit_status;
   }
 
   /* Exit program (MA) */
   if (cmd->word_count == 1 || cmd->word_count == 2)
-    bigshell_exit();
+    myfirstshell_exit();
 
   /* Error: too many arguments */
   return -1;

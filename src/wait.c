@@ -41,7 +41,7 @@ wait_on_fg_gid(pid_t pgid)
     }
   }
 
-  /* XXX From this point on, all exit paths must account for setting bigshell
+  /* XXX From this point on, all exit paths must account for setting myfirstshell
    * back to the foreground process group--no naked return statements */
   int retval = 0;
 
@@ -107,10 +107,10 @@ err:
   }
 
   if (isatty(STDIN_FILENO)) {
-    /* Make bigshell the foreground process group again
+    /* Make myfirstshell the foreground process group again
      * XXX review tcsetpgrp(3) 
      *
-     * Note: this will cause bigshell to receive a SIGTTOU signal.
+     * Note: this will cause myfirstshell to receive a SIGTTOU signal.
      *       You need to also finish signal.c to have full functionality here
      */
     tcsetpgrp(STDIN_FILENO, getpid());

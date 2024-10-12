@@ -532,7 +532,7 @@ command_list_parse(struct command_list **cl, FILE *stream)
       char *s_copy = strdup(s);
       if (s_copy) {
         if (expand_prompt(&s_copy)) {
-          char prefix[] = "\n=== [BIGSHELL] ===";
+          char prefix[] = "\n=== [MY FIRST SHELL] ===\n";
           write(fileno(stream), prefix, sizeof prefix - 1);
           write(fileno(stream), s_copy, strlen(s_copy));
         }

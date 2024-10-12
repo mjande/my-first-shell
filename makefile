@@ -4,12 +4,12 @@ TARGETS := release debug
 
 export TERM ?= xterm-256color
 
-all: release/bigshell debug/bigshell
+all: release/my-first-shell debug/my-first-shell
 
 compile_commands.json:
 	bear -- $(MAKE) -B all
 
-EXE := bigshell
+EXE := my-first-shell 
 SRCS := $(shell find src -type f -name '*.c')
 OBJS := $(SRCS:src/%.c=%.o)
 
@@ -26,10 +26,10 @@ debug/%.o: src/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-release/bigshell: $(patsubst src/%.c,release/%.o,$(SRCS)) | release/
+release/my-first-shell: $(patsubst src/%.c,release/%.o,$(SRCS)) | release/
 	$(CC) $(LDFLAGS) $^ -o $@
 
-debug/bigshell: $(patsubst src/%.c,debug/%.o,$(SRCS)) | debug/
+debug/my-first-shell: $(patsubst src/%.c,debug/%.o,$(SRCS)) | debug/
 	$(CC) $(LDFLAGS) $^ -o $@
 
 release/:
