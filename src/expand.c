@@ -15,12 +15,15 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include "params.h"
 #include "util/asprintf.h"
 #include "vars.h"
 
 #include "expand.h"
+
+#define HOST_NAME_MAX 256
 
 static char *
 strchrnul(char const *s, int c)

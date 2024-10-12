@@ -4,7 +4,7 @@ TARGETS := release debug
 
 export TERM ?= xterm-256color
 
-all: $(TARGETS)
+all: release/bigshell debug/bigshell
 
 compile_commands.json:
 	bear -- $(MAKE) -B all
@@ -17,22 +17,26 @@ CFLAGS = -std=c99 -Wall -Werror=vla
 release: CFLAGS += -O3 
 debug: CFLAGS += -g -O0
 
-CPPFLAGS :=
-release: CPPFLAGS += -DNDEBUG
 
-define PROGRAM_template = 
-$(1): $(1)/$$(EXE) | $(1)/
+release/%.o: src/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -DNDEBUG -c $< -o $@
 
-$(1)/$$(EXE): $$(addprefix $(1)/,$$(OBJS)) | $(1)/
-	$$(LINK.c) $$^ $$(LOADLIBES) $$(LDLIBS) -o $$@
+debug/%.o: src/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
 
+release/bigshell: $(patsubst src/%.c,release/%.o,$(SRCS)) | release/
+	$(CC) $(LDFLAGS) $^ -o $@
 
-$$(addprefix $(1)/,$$(OBJS)): $(1)/%.o : src/%.c | $$(foreach obj,$$(addprefix $(1)/,$$(OBJS)),$$(dir $$(obj)))
-	$$(COMPILE.c) $$(OUTPUT_OPTION) $$<
-endef
+debug/bigshell: $(patsubst src/%.c,debug/%.o,$(SRCS)) | debug/
+	$(CC) $(LDFLAGS) $^ -o $@
 
+release/:
+	mkdir -p release/
 
-$(foreach target,$(TARGETS),$(eval $(call PROGRAM_template,$(target))))
+debug/:
+	mkdir -p debug/
 
 clean:
 	rm -vr $(TARGETS)

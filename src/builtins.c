@@ -1,4 +1,4 @@
-#include <linux/limits.h>
+#include <limits.h>
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
 #include <limits.h>
